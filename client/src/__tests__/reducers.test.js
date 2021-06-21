@@ -5,6 +5,7 @@ import {
   UPDATE_CURRENT_CATEGORY,
 } from "../utils/actions";
 import { reducer } from "../utils/reducers";
+import { useReducer } from "react";
 
 //create a sample of what global state will look like
 const initialState = {
@@ -45,3 +46,8 @@ test("UPDATE_CURRENT_CATEGORY", () => {
   expect(newState.currentCategory).toBe("2");
   expect(initialState.currentCategory).toBe("1");
 });
+
+//create function to help initialize global state and update it with reducer function
+export function useProductReducer(initialState) {
+  return useReducer(reducer, initialState);
+}
