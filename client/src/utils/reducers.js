@@ -4,6 +4,7 @@ import {
   UPDATE_CATEGORIES,
   UPDATE_CURRENT_CATEGORY,
 } from "./actions";
+import { useReducer } from "react";
 
 //create function called reducer, passing value of action.type into a switch statement
 export const reducer = (state, action) => {
@@ -33,3 +34,8 @@ export const reducer = (state, action) => {
       return state;
   }
 };
+
+//create function to help initialize global state and update it with reducer function
+export function useProductReducer(initialState) {
+  return useReducer(reducer, initialState);
+}

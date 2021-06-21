@@ -46,8 +46,3 @@ test("UPDATE_CURRENT_CATEGORY", () => {
   expect(newState.currentCategory).toBe("2");
   expect(initialState.currentCategory).toBe("1");
 });
-
-//create function to help initialize global state and update it with reducer function
-export function useProductReducer(initialState) {
-  return useReducer(reducer, initialState);
-}
