@@ -8,6 +8,7 @@ import spinner from "../../assets/spinner.gif";
 import React, { useEffect } from "react";
 import { useStoreContext } from "../../utils/GlobalState";
 import { UPDATE_PRODUCTS } from "../../utils/actions";
+import { idbPromise } from "../../utils/helpers";
 
 //updated to remove { currentCategory }
 function ProductList() {
@@ -35,15 +36,21 @@ function ProductList() {
   const { loading, data } = useQuery(QUERY_PRODUCTS);
   //wait for useQuery response
   useEffect(() => {
+    //if there's data to be stored
     if (data) {
       //when data has a value, save array of product data to global store
       dispatch({
         type: UPDATE_PRODUCTS,
         products: data.products,
       });
+
+      //and save each product to IndexedDB using the helper function
+      data.products.forEach((product) => {
+        idbPromise("products", "put", product);
+      });
     }
     //execute useStore Contact again to deliver product data to display products
-  }, [data, dispatch]);
+  }, [data, loading, dispatch]);
 
   function filterProducts() {
     if (!currentCategory) {

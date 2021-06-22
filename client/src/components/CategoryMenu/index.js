@@ -9,6 +9,7 @@ import {
   UPDATE_CATEGORIES,
   UPDATE_CURRENT_CATEGORY,
 } from "../../utils/actions";
+import { idbPromise } from "../../utils/helpers";
 
 //updated: removed { setCategory } prop
 function CategoryMenu() {
@@ -18,7 +19,7 @@ function CategoryMenu() {
   //updated to query Category data and store it to global state object to be used in the UI
   const [state, dispatch] = useStoreContext();
   const { categories } = state;
-  const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+  const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
   //updated to include useEffect
   //when component loads and response from useQuery hook above returns, useEffect notices that categoryData is no longer defined, then runs dispatch, setting category data to global state
 
@@ -32,8 +33,20 @@ function CategoryMenu() {
         type: UPDATE_CATEGORIES,
         categories: categoryData.categories,
       });
+      //update indexeddb
+      categoryData.categories.forEach((category) => {
+        idbPromise("categories", "put", category);
+      });
+      //if we lose internet connection, check if useQuery hook's loading return value exists and if not, pull from indexeddb
+    } else if (!loading) {
+      idbPromise("categories", "get").then((categories) => {
+        dispatch({
+          type: UPDATE_CATEGORIES,
+          categories: categories,
+        });
+      });
     }
-  }, [categoryData, dispatch]);
+  }, [categoryData, loading, dispatch]);
 
   //updated: update click handler below and add function to update state instead of using function prop from Home
   const handleClick = (id) => {

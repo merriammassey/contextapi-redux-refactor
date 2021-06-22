@@ -15,6 +15,7 @@ import {
   ADD_TO_CART,
   UPDATE_PRODUCTS,
 } from "../utils/actions";
+import { idbPromise } from "../utils/helpers";
 
 function Detail() {
   const addToCart = () => {
@@ -74,10 +75,21 @@ function Detail() {
         type: UPDATE_PRODUCTS,
         products: data.products,
       });
+      data.products.forEach((product) => {
+        idbPromise("products", "put", product);
+      });
+      //get cache from idb
+    } else if (!loading) {
+      idbPromise("products", "get").then((indexedProducts) => {
+        dispatch({
+          type: UPDATE_PRODUCTS,
+          products: indexedProducts,
+        });
+      });
     }
     //run again, and setCurrentProduct to display single product
     //only runs when there's a change in value in arguments below in dependency array
-  }, [products, data, dispatch, id]);
+  }, [products, loading, data, dispatch, id]);
 
   return (
     <>

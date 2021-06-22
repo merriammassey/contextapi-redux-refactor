@@ -4,7 +4,7 @@ export function pluralize(name, count) {
   }
   return name + "s";
 }
-
+//open connection to indexeddb database and create object stores
 export function idbPromise(storeName, method, object) {
   return new Promise((resolve, reject) => {
     // open connection to the database `shop-shop` with the version of 1
@@ -26,6 +26,7 @@ export function idbPromise(storeName, method, object) {
     request.onerror = function (e) {
       console.log("There was an error");
     };
+
     // on database open success
     request.onsuccess = function (e) {
       // save a reference of the database to the `db` variable
