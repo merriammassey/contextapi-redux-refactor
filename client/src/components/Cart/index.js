@@ -7,9 +7,18 @@ import { useStoreContext } from "../../utils/GlobalState";
 import React, { useEffect } from "react";
 import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from "../../utils/actions";
 import { idbPromise } from "../../utils/helpers";
+//import stripe
+import { QUERY_CHECKOUT } from "../../utils/queries";
+import { loadStripe } from "@stripe/stripe-js";
+//data variable will contain the checkout session, but only after the query is called with the getCheckout() function
+import { useLazyQuery } from "@apollo/client";
+
+//use object stripePromise to perform the checkout redirect
+const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
 
 const Cart = () => {
   const [state, dispatch] = useStoreContext();
+  const [getCheckout, { data }] = useLazyQuery(QUERY_CHECKOUT);
   //console.log(state);
 
   //check if there's anything in the state's cart property on load. If not, we'll retrieve data from the IndexedDB cart object store
@@ -36,6 +45,27 @@ const Cart = () => {
     return sum.toFixed(2);
   }
 
+  function submitCheckout() {
+    const productIds = [];
+
+    state.cart.forEach((item) => {
+      for (let i = 0; i < item.purchaseQuantity; i++) {
+        productIds.push(item._id);
+      }
+    });
+    getCheckout({
+      variables: { products: productIds },
+    });
+  }
+  //watch for changes to data
+  useEffect(() => {
+    if (data) {
+      //use the stripePromise object to redirect to Stripe once the data variable has data in it.
+      stripePromise.then((res) => {
+        res.redirectToCheckout({ sessionId: data.checkout.session });
+      });
+    }
+  }, [data]);
   //if cartOpen is false, return a smaller div
   //Clicking this <div>, however, will set cartOpen to true and return the expanded shopping cart.
   if (!state.cartOpen) {
@@ -63,7 +93,7 @@ const Cart = () => {
           <div className="flex-row space-between">
             <strong>Total: ${calculateTotal()}</strong>
             {Auth.loggedIn() ? (
-              <button>Checkout</button>
+              <button onClick={submitCheckout}>Checkout</button>
             ) : (
               <span>(log in to check out)</span>
             )}
