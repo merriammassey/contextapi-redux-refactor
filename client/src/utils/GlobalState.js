@@ -1,11 +1,30 @@
 //createContext to instantiate a new Context object
 import React, { createContext, useContext } from "react";
 import { useProductReducer } from "./reducers";
+import { configureStore } from "@reduxjs/toolkit";
+//new
+const authState = {
+  token: "",
+};
+
+//new
+function authReducer(state = authState, action) {
+  //do things
+  return state;
+}
+
+//new
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+  },
+  middleware,
+});
 
 //instantiate global state object
-const StoreContext = createContext();
+//const StoreContext = createContext();
 //pull provider out of context
-const { Provider } = StoreContext;
+//const { Provider } = StoreContext;
 
 //create provider function to manage and update state using reducer, bundling it all
 const StoreProvider = ({ value = [], ...props }) => {
