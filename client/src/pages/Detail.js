@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-
 import { QUERY_PRODUCTS } from "../utils/queries";
 import spinner from "../assets/spinner.gif";
-//updated
-import { useStoreContext } from "../utils/GlobalState";
 //import { UPDATE_PRODUCTS } from "../utils/actions";
 import Cart from "../components/Cart";
-//cart
+//new
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   REMOVE_FROM_CART,
   UPDATE_CART_QUANTITY,
@@ -18,6 +17,54 @@ import {
 import { idbPromise } from "../utils/helpers";
 
 function Detail() {
+  //updated
+  //const [state, dispatch] = useStoreContext();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const [currentProduct, setCurrentProduct] = useState({});
+  const { loading, data } = useQuery(QUERY_PRODUCTS);
+  const { products, cart } = state;
+  const { id } = useParams();
+
+  const [currentProduct, setCurrentProduct] = useState({});
+
+  const { loading, data } = useQuery(QUERY_PRODUCTS);
+
+  const products = data?.products || [];
+
+  useEffect(() => {
+    if (products.length) {
+      setCurrentProduct(products.find((product) => product._id === id));
+    }
+  }, [products, id]);
+
+  useEffect(() => {
+    //check to see if there's data in global state product array
+    if (products.length) {
+      //set product based on global state
+      setCurrentProduct(products.find((product) => product._id === id));
+      //if there's no data in products array, use product data returned from useQuery hook to set product data to global state object
+    } else if (data) {
+      dispatch({
+        type: UPDATE_PRODUCTS,
+        products: data.products,
+      });
+      data.products.forEach((product) => {
+        idbPromise("products", "put", product);
+      });
+      //get cache from idb
+    } else if (!loading) {
+      idbPromise("products", "get").then((indexedProducts) => {
+        dispatch({
+          type: UPDATE_PRODUCTS,
+          products: indexedProducts,
+        });
+      });
+    }
+    //run again, and setCurrentProduct to display single product
+    //only runs when there's a change in value in arguments below in dependency array
+  }, [products, loading, data, dispatch, id]);
+
   const addToCart = () => {
     const itemInCart = cart.find((cartItem) => cartItem._id === id);
 
@@ -53,55 +100,6 @@ function Detail() {
     // upon removal from cart, delete the item from IndexedDB using the `currentProduct._id` to locate what to remove
     idbPromise("cart", "delete", { ...currentProduct });
   };
-  /* const { id } = useParams();
-
-  const [currentProduct, setCurrentProduct] = useState({});
-
-  const { loading, data } = useQuery(QUERY_PRODUCTS);
-
-  const products = data?.products || [];
-
-  useEffect(() => {
-    if (products.length) {
-      setCurrentProduct(products.find((product) => product._id === id));
-    }
-  }, [products, id]);
- */
-
-  //updated
-  //get global state
-  const [state, dispatch] = useStoreContext();
-  const { id } = useParams();
-  const [currentProduct, setCurrentProduct] = useState({});
-  const { loading, data } = useQuery(QUERY_PRODUCTS);
-  const { products, cart } = state;
-
-  useEffect(() => {
-    //check to see if there's data in global state product array
-    if (products.length) {
-      //set product based on global state
-      setCurrentProduct(products.find((product) => product._id === id));
-      //if there's no data in products array, use product data returned from useQuery hook to set product data to global state object
-    } else if (data) {
-      dispatch({
-        type: UPDATE_PRODUCTS,
-        products: data.products,
-      });
-      data.products.forEach((product) => {
-        idbPromise("products", "put", product);
-      });
-      //get cache from idb
-    } else if (!loading) {
-      idbPromise("products", "get").then((indexedProducts) => {
-        dispatch({
-          type: UPDATE_PRODUCTS,
-          products: indexedProducts,
-        });
-      });
-    }
-    //run again, and setCurrentProduct to display single product
-    //only runs when there's a change in value in arguments below in dependency array
-  }, [products, loading, data, dispatch, id]);
 
   return (
     <>

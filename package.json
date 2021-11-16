@@ -14,7 +14,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^5.1.0"
+    "concurrently": "^5.1.0",
+    "redux-devtools-extension": "^2.13.9"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0"

@@ -2,6 +2,7 @@
 import React, { createContext, useContext } from "react";
 import { useProductReducer } from "./reducers";
 import { configureStore } from "@reduxjs/toolkit";
+
 //new
 const authState = {
   token: "",
@@ -14,6 +15,7 @@ function authReducer(state = authState, action) {
 }
 
 //new
+//accepts config object
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -21,10 +23,10 @@ const store = configureStore({
   middleware,
 });
 
-//instantiate global state object
-//const StoreContext = createContext();
-//pull provider out of context
-//const { Provider } = StoreContext;
+//instantiate global state container
+const StoreContext = createContext();
+//pull provider - one component of context with consumer - out of context
+const { Provider } = StoreContext;
 
 //create provider function to manage and update state using reducer, bundling it all
 const StoreProvider = ({ value = [], ...props }) => {
