@@ -10,6 +10,8 @@ import {
   UPDATE_CURRENT_CATEGORY,
 } from "../../utils/actions";
 import { idbPromise } from "../../utils/helpers";
+//new
+import { useDispatch, useSelector } from "react-redux";
 
 //updated: removed { setCategory } prop
 function CategoryMenu() {
@@ -17,7 +19,11 @@ function CategoryMenu() {
   //const categories = categoryData?.categories || [];
 
   //updated to query Category data and store it to global state object to be used in the UI
-  const [state, dispatch] = useStoreContext();
+  //const [state, dispatch] = useStoreContext();
+  //new
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+
   const { categories } = state;
   const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
   //updated to include useEffect
