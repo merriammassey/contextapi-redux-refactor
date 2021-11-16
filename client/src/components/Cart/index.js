@@ -12,6 +12,8 @@ import { QUERY_CHECKOUT } from "../../utils/queries";
 import { loadStripe } from "@stripe/stripe-js";
 //data variable will contain the checkout session, but only after the query is called with the getCheckout() function
 import { useLazyQuery } from "@apollo/client";
+//new
+import { useDispatch, useSelector } from "react-redux";
 
 //use object stripePromise to perform the checkout redirect
 const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");

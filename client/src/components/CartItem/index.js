@@ -2,10 +2,14 @@ import React from "react";
 import { useStoreContext } from "../../utils/GlobalState";
 import { REMOVE_FROM_CART, UPDATE_CART_QUANTITY } from "../../utils/actions";
 import { idbPromise } from "../../utils/helpers";
+//new
+import { useDispatch, useSelector } from "react-redux";
 
 const CartItem = ({ item }) => {
   //cartItem has no need to read state, so destructure only dispatch function
-  const [, dispatch] = useStoreContext();
+  //const [, dispatch] = useStoreContext();
+  //new
+  const dispatch = useDispatch();
 
   const removeFromCart = (item) => {
     dispatch({
