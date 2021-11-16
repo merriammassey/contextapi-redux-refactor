@@ -9,13 +9,25 @@ import React, { useEffect } from "react";
 import { useStoreContext } from "../../utils/GlobalState";
 import { UPDATE_PRODUCTS } from "../../utils/actions";
 import { idbPromise } from "../../utils/helpers";
+//new
+import { useDispatch, useSelector } from "react-redux";
 
 //updated to remove { currentCategory }
 function ProductList() {
-  /* const { loading, data } = useQuery(QUERY_PRODUCTS);
+  //new
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+
+  const { loading, data } = useQuery(QUERY_PRODUCTS);
 
   const products = data?.products || [];
+  //updated
+  //execute the useStoreContext() function to retrieve the current global state object and the dipatch() method to update state
+  //const [state, dispatch] = useStoreContext();
+  //destructure the currentCategory data out of the state object so we can use it in the filterProducts() function
+  const { currentCategory } = state;
 
+  const { loading, data } = useQuery(QUERY_PRODUCTS);
   function filterProducts() {
     if (!currentCategory) {
       return products;
@@ -25,15 +37,7 @@ function ProductList() {
       (product) => product.category._id === currentCategory
     );
   }
- */
 
-  //updated
-  //execute the useStoreContext() function to retrieve the current global state object and the dipatch() method to update state
-  const [state, dispatch] = useStoreContext();
-  //destructure the currentCategory data out of the state object so we can use it in the filterProducts() function
-  const { currentCategory } = state;
-
-  const { loading, data } = useQuery(QUERY_PRODUCTS);
   //wait for useQuery response
   useEffect(() => {
     //if there's data to be stored
