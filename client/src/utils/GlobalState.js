@@ -1,5 +1,5 @@
 //createContext to instantiate a new Context object
-import React, { createContext, useContext } from "react";
+/* import React, { createContext, useContext } from "react";
 import { useProductReducer } from "./reducers";
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -52,3 +52,4 @@ const useStoreContext = () => {
 };
 
 export { StoreProvider, useStoreContext };
+ */

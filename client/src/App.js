@@ -18,6 +18,8 @@ import OrderHistory from "./pages/OrderHistory";
 import Success from "./pages/Success";
 //make global state available to all components
 import { Provider } from "react-redux";
+//new
+import store from "./utils/store";
 
 const httpLink = createHttpLink({
   uri: "/graphql",

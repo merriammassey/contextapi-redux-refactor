@@ -21,7 +21,7 @@ const initialState = {
 };
 
 //create function called reducer, passing value of action.type into a switch statement
-export const reducers = (state, action) => {
+export const reducers = (state = initialState, action) => {
   //compare action.type to possible actions
   switch (action.type) {
     //if action type value is the value of 'UPDATE_RPODUCTS', return a new state object with an updated products array

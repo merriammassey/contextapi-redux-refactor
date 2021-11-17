@@ -19,18 +19,16 @@ import { idbPromise } from "../utils/helpers";
 function Detail() {
   //updated
   //const [state, dispatch] = useStoreContext();
+  //new
   const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+
   const { id } = useParams();
   const [currentProduct, setCurrentProduct] = useState({});
   const { loading, data } = useQuery(QUERY_PRODUCTS);
   const { products, cart } = state;
-  const { id } = useParams();
 
-  const [currentProduct, setCurrentProduct] = useState({});
-
-  const { loading, data } = useQuery(QUERY_PRODUCTS);
-
-  const products = data?.products || [];
+  //const products = data?.products || [];
 
   useEffect(() => {
     if (products.length) {
